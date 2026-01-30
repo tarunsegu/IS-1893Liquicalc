@@ -315,7 +315,7 @@ st.markdown(
             <strong>Independent verification is mandatory before professional or statutory use.
         </p>
         <p style="font-size: 1.1em;">
-            <strong>Created by:</strong> S.Kalyani | S.Tarun | G.Anil, Guided by:</strong> Dr.Chenna Rajaram
+            <strong>Created by:</strong> S.Kalyani | S.Tarun | G.Anil, Guided by:</strong> Dr.Chenna Rajaram and Mrs. Vrushali Kamalakar
         </p>
     </div>
     """,
