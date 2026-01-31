@@ -3,6 +3,7 @@ import pandas as pd
 import math
 import os
 
+
 # --------------------------------------------------
 # HELPER FUNCTIONS
 # --------------------------------------------------
@@ -22,6 +23,15 @@ def calculate_rd_2025(z, mw):
     alpha = -1.012 - 1.126 * math.sin(z / 11.73 + 5.133)
     beta = 0.106 + 0.118 * math.sin(z / 11.28 + 5.142)
     return math.exp(alpha + beta * mw)
+
+
+def get_fos_status(fos):
+    if fos < 1.2:
+        return "Unsafe Against Liquefaction", "error"
+    elif 1.2 <= fos <= 1.4:
+        return "Verify Ground Settlement", "warning"
+    else:
+        return "Safe Against Liquefaction", "success"
 
 
 # --------------------------------------------------
@@ -57,7 +67,7 @@ st.markdown(
 # MAIN TITLE
 # --------------------------------------------------
 # Creating columns to display image and text side-by-side
-col1, col2 = st.columns([1, 6]) # Adjust the ratio as needed
+col1, col2 = st.columns([1, 6])  # Adjust the ratio as needed
 
 with col1:
     # Ensure the image file is in the same directory as app.py
@@ -65,7 +75,7 @@ with col1:
     if os.path.exists("icon.png"):
         st.image("icon.png", width=80)
     else:
-        st.write("📊") # Fallback emoji if image is missing
+        st.write("📊")  # Fallback emoji if image is missing
 
 with col2:
     st.title("Liquefaction Analysis: IS 1893 (2016 vs 2025)")
@@ -242,13 +252,16 @@ if calculate_btn:
         st.metric("CSR", f"{csr_16:.3f}")
         st.metric("CRR", f"{crr_16:.3f}")
 
-        fos_disp_16 = f"{fos_16:.3f}"
-        if fos_16 < 1.0:
-            st.error(f"FOS: {fos_disp_16} (Unsafe)")
-        elif fos_16 < 1.2:
-            st.warning(f"FOS: {fos_disp_16} (Marginal)")
+        # Update FOS status logic
+        status_16, status_type_16 = get_fos_status(fos_16)
+
+        st.metric("FOS", f"{fos_16:.3f}")
+        if status_type_16 == "error":
+            st.error(f"STATUS: {status_16}")
+        elif status_type_16 == "warning":
+            st.warning(f"STATUS: {status_16}")
         else:
-            st.success(f"FOS: {fos_disp_16} (Safe)")
+            st.success(f"STATUS: {status_16}")
 
         with st.expander("Detailed Inputs (2016)"):
             st.write(f"rd: {rd_16:.3f}")
@@ -263,13 +276,16 @@ if calculate_btn:
         st.metric("CSR", f"{csr_25:.3f}")
         st.metric("CRR", f"{crr_25:.3f}")
 
-        fos_disp_25 = f"{fos_25:.3f}"
-        if fos_25 < 1.0:
-            st.error(f"FOS: {fos_disp_25} (Unsafe)")
-        elif fos_25 < 1.2:
-            st.warning(f"FOS: {fos_disp_25} (Marginal)")
+        # Update FOS status logic
+        status_25, status_type_25 = get_fos_status(fos_25)
+
+        st.metric("FOS", f"{fos_25:.3f}")
+        if status_type_25 == "error":
+            st.error(f"STATUS: {status_25}")
+        elif status_type_25 == "warning":
+            st.warning(f"STATUS: {status_25}")
         else:
-            st.success(f"FOS: {fos_disp_25} (Safe)")
+            st.success(f"STATUS: {status_25}")
 
         with st.expander("Detailed Inputs (2025)"):
             st.write(f"rd: {rd_25:.3f}")
@@ -315,7 +331,7 @@ st.markdown(
             <strong>Independent verification is mandatory before professional or statutory use.
         </p>
         <p style="font-size: 1.1em;">
-            <strong>Created by:</strong> S.Kalyani | S.Tarun | G.Anil, Guided by:</strong> Dr.Chenna Rajaram and Mrs. Vrushali Kamalakar
+            <strong>Developed by:</strong> S.Kalyani | S.Tarun | G.Anil, Guided by:</strong> Dr.Chenna Rajaram and Mrs. Vrushali Kamalakar
         </p>
     </div>
     """,
